@@ -1,2 +1,2 @@
-Homer server setup in andsible.
+Homer server setup in ansible.
 
