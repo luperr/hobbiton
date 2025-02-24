@@ -1,0 +1,15 @@
+- hosts: 192.168.1.85
+  become: false
+  gather_facts: false
+  tasks:
+
+          - name: Create VM
+            vars:
+                    ansible_python_interpreter: /usr/bin/python3
+            proxmox_kvm:
+                    api_user:
+                    api_token_id:
+                    api_token_secret:
+                    api_host: 192.168.1.85
+                    node: pve
+                    name: test1
