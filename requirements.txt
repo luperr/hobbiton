@@ -1,0 +1,13 @@
+ansible
+ansible-core
+cffi
+cryptography
+importlib-resources
+Jinja2
+MarkupSafe
+packaging
+proxmoxer
+pycparser
+PyYAML
+resolvelib
+typing_extensions

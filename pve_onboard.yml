@@ -1,4 +1,4 @@
-- hosts: pvenodes
+- hosts: all
   tasks:
 
   - name: install sudo package
@@ -12,11 +12,13 @@
     user:
       name: ansible
       shell: '/bin/bash'
+      groups: sudo
+      append: true
 
   - name: add Ansible ssh key
     authorized_key:
       user: ansible
-      key: "ssh-ed25519 AAAAC3NzaC1lZDI1NTE5AAAAIOkfZaUoBUjNhhvEpOIial4A0UEmnE1VYA2zklfFn534 lachlannwhitehill@gmail.com"
+      key: "ssh-ed25519 AAAAC3NzaC1lZDI1NTE5AAAAIPE9584N/jmD6ud9eiFNbzkWyvyAj9AS8OysUFnPPAaB lachlannwhitehill@gmail.com"
 
   - name: add ansible to sudoers
     copy:

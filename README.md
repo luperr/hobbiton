@@ -1,2 +1,2 @@
-Homer server setup in ansible.
+Home server setup in ansible.
 
