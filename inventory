@@ -1,12 +1,11 @@
 [pvenodes]
-192.168.1.85
+pve-node-1 ansible_host=192.168.1.85
 
-[homeassistant]
-192.168.1.93
-
-[pihole]
-192.168.1.87
-
+[lxc-containers]
+homeassistant ansible_host=192.168.1.93
+piehole ansible_host=192.168.1.87
+unifi ansible_host=192.168.1.91
+paperless ansible_host=192.168.1.116
 
 [all:vars]
 ansible_user=ansible
