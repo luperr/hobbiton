@@ -7,6 +7,10 @@ piehole ansible_host=192.168.1.87
 unifi ansible_host=192.168.1.91
 paperless ansible_host=192.168.1.116
 
+[monitoring]
+# TODO: provision a monitoring LXC on Proxmox and update the IP below
+monitoring ansible_host=192.168.1.X
+
 [all:vars]
 ansible_user=ansible
 ansible_become=yes

@@ -1,0 +1,15 @@
+---
+# Deploy Node Exporter on every managed host so Prometheus can scrape metrics.
+- hosts: all
+  become: true
+  roles:
+    - node_exporter
+
+# Deploy the monitoring stack (Prometheus, Grafana, Uptime Kuma) on the
+# dedicated monitoring LXC container.
+- hosts: monitoring
+  become: true
+  roles:
+    - prometheus
+    - grafana
+    - uptime_kuma
