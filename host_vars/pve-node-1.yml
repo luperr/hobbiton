@@ -1,0 +1,6 @@
+---
+# Host-specific overrides for pve-node-1.
+# Uncomment and set values here to override group_vars/pvenodes.yml defaults.
+
+# Example: lock Proxmox UI access to a single workstation instead of the whole LAN subnet.
+# ufw_lan_subnet: "192.168.1.50"

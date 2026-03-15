@@ -1,0 +1,44 @@
+---
+# Variables for Proxmox host hardening.
+# Override per-host in host_vars/<hostname>.yml if needed.
+
+# --- SSH hardening (Phase 1) ---
+ssh_port: 22
+ssh_permit_root_login: "no"
+ssh_password_authentication: "no"
+ssh_pubkey_authentication: "yes"
+ssh_max_auth_tries: 3
+ssh_client_alive_interval: 300
+ssh_client_alive_count_max: 2
+# Space-separated list of users allowed to SSH in.
+ssh_allowed_users:
+  - ansible
+
+# --- fail2ban (Phase 1) ---
+fail2ban_ssh_maxretry: 5
+fail2ban_ssh_bantime: 3600    # seconds (1 hour)
+fail2ban_ssh_findtime: 600    # seconds (10 min)
+
+# --- UFW (Phase 1) ---
+# Restrict Proxmox web UI (8006) to this subnet.
+# Set to a single workstation IP for tighter control: "192.168.1.50"
+ufw_lan_subnet: "192.168.1.0/24"
+ufw_proxmox_ui_port: 8006
+# Docker bridge networks — allow so containers can reach the host.
+ufw_docker_subnet: "172.16.0.0/12"
+
+# --- Network bridges (Phase 2) ---
+# Each entry will create a bridge in /etc/network/interfaces.
+proxmox_bridges:
+  - name: vmbr1
+    address: "10.10.20.1"
+    prefix: "24"
+    comment: "Services VLAN 20"
+    nat_source: "10.10.20.0/24"
+    nat_via: "vmbr0"
+  - name: vmbr2
+    address: "10.10.30.1"
+    prefix: "24"
+    comment: "Monitoring VLAN 30"
+    nat_source: "10.10.30.0/24"
+    nat_via: "vmbr0"

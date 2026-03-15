@@ -1,0 +1,6 @@
+---
+# Shared across all hosts.
+# ansible_user/become vars moved here from inventory [all:vars].
+ansible_user: ansible
+ansible_become: true
+ansible_become_method: sudo
