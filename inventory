@@ -1,13 +1,21 @@
 [pvenodes]
 pve-node-1 ansible_host=192.168.1.85
 
-[lxc-containers]
+[lxc_containers]
 homeassistant ansible_host=192.168.1.93
-piehole ansible_host=192.168.1.87
-unifi ansible_host=192.168.1.91
-paperless ansible_host=192.168.1.116
+piehole       ansible_host=192.168.1.87
+unifi         ansible_host=192.168.1.91
+paperless     ansible_host=192.168.1.116
 
-[all:vars]
-ansible_user=ansible
-ansible_become=yes
-ansible_become_method=sudo
+# Services VLAN 20 (10.10.20.0/24) — uncomment after Phase 2 network migration
+[lxc_services]
+# docker-host ansible_host=10.10.20.10
+
+# Monitoring VLAN 30 (10.10.30.0/24) — uncomment when monitoring stack is deployed
+[lxc_monitoring]
+# monitoring ansible_host=10.10.30.10
+
+[lxc_all:children]
+lxc_containers
+lxc_services
+lxc_monitoring
