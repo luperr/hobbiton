@@ -28,17 +28,20 @@ ufw_proxmox_ui_port: 8006
 ufw_docker_subnet: "172.16.0.0/12"
 
 # --- Network bridges (Phase 2) ---
-# Each entry will create a bridge in /etc/network/interfaces.
-proxmox_bridges:
-  - name: vmbr1
-    address: "10.10.20.1"
+# Router (EdgeRouter X) is the gateway for each VLAN — no NAT on Proxmox.
+# Each entry creates a VLAN sub-interface on the physical NIC and attaches it to a bridge.
+proxmox_phys_nic: "eno1"
+
+proxmox_vlans:
+  - vlan_id: 20
+    bridge: vmbr1
+    address: "10.10.20.2"
     prefix: "24"
+    gateway: "10.10.20.1"
     comment: "Services VLAN 20"
-    nat_source: "10.10.20.0/24"
-    nat_via: "vmbr0"
-  - name: vmbr2
-    address: "10.10.30.1"
+  - vlan_id: 30
+    bridge: vmbr2
+    address: "10.10.30.2"
     prefix: "24"
+    gateway: "10.10.30.1"
     comment: "Monitoring VLAN 30"
-    nat_source: "10.10.30.0/24"
-    nat_via: "vmbr0"
