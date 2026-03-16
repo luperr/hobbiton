@@ -1,0 +1,5 @@
+---
+- import_playbook: harden_proxmox_host.yml
+- import_playbook: configure_network.yml
+- import_playbook: harden_lxc.yml
+- import_playbook: harden_docker.yml

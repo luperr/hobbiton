@@ -1,6 +1,21 @@
 ---
 # Shared across all hosts.
-# ansible_user/become vars moved here from inventory [all:vars].
 ansible_user: ansible
 ansible_become: true
 ansible_become_method: sudo
+
+# --- SSH hardening ---
+ssh_port: 22
+ssh_permit_root_login: "no"
+ssh_password_authentication: "no"
+ssh_pubkey_authentication: "yes"
+ssh_max_auth_tries: 3
+ssh_client_alive_interval: 300
+ssh_client_alive_count_max: 2
+ssh_allowed_users:
+  - ansible
+
+# --- fail2ban ---
+fail2ban_ssh_maxretry: 5
+fail2ban_ssh_bantime: 3600
+fail2ban_ssh_findtime: 600

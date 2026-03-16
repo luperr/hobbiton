@@ -1,0 +1,7 @@
+---
+- name: Harden Docker daemon
+  hosts: lxc_services
+  become: true
+
+  roles:
+    - docker_hardening

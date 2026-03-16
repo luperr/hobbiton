@@ -1,23 +1,5 @@
 ---
-# Variables for Proxmox host hardening.
-# Override per-host in host_vars/<hostname>.yml if needed.
-
-# --- SSH hardening (Phase 1) ---
-ssh_port: 22
-ssh_permit_root_login: "no"
-ssh_password_authentication: "no"
-ssh_pubkey_authentication: "yes"
-ssh_max_auth_tries: 3
-ssh_client_alive_interval: 300
-ssh_client_alive_count_max: 2
-# Space-separated list of users allowed to SSH in.
-ssh_allowed_users:
-  - ansible
-
-# --- fail2ban (Phase 1) ---
-fail2ban_ssh_maxretry: 5
-fail2ban_ssh_bantime: 3600    # seconds (1 hour)
-fail2ban_ssh_findtime: 600    # seconds (10 min)
+# Proxmox host specific vars — overrides all.yml where needed.
 
 # --- UFW (Phase 1) ---
 # Restrict Proxmox web UI (8006) to this subnet.
@@ -29,7 +11,6 @@ ufw_docker_subnet: "172.16.0.0/12"
 
 # --- Network bridges (Phase 2) ---
 # Router (EdgeRouter X) is the gateway for each VLAN — no NAT on Proxmox.
-# Each entry creates a VLAN sub-interface on the physical NIC and attaches it to a bridge.
 proxmox_phys_nic: "eno1"
 
 proxmox_vlans:

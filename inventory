@@ -6,11 +6,11 @@ pihole         ansible_host=192.168.1.87   vmid=100
 unifi          ansible_host=192.168.1.91   vmid=101
 homeassistant  ansible_host=192.168.1.93   vmid=102
 paperless      ansible_host=192.168.1.116  vmid=104
-cloudflared    ansible_host=192.168.1.154    vmid=106
+cloudflared    ansible_host=192.168.1.154  vmid=106
 
-# Services VLAN 20 (10.10.20.0/24) — uncomment after Phase 2 network migration
+# Services VLAN 20 (10.10.20.0/24) — update IP to 10.10.20.10 after VLAN migration
 [lxc_services]
-# docker-host ansible_host=10.10.20.10   vmid=107
+docker         ansible_host=192.168.1.161  vmid=107
 
 # Monitoring VLAN 30 (10.10.30.0/24) — uncomment when monitoring stack is deployed
 [lxc_monitoring]
