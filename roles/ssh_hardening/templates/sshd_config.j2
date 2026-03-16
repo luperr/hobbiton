@@ -17,6 +17,9 @@ AllowUsers {{ ssh_allowed_users | join(' ') }}
 ClientAliveInterval {{ ssh_client_alive_interval }}
 ClientAliveCountMax {{ ssh_client_alive_count_max }}
 
+# PAM required for session setup on Debian even with pubkey auth
+UsePAM yes
+
 # Reduce attack surface
 X11Forwarding no
 PermitEmptyPasswords no

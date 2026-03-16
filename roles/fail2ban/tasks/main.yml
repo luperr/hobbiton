@@ -14,8 +14,12 @@
     mode: "0644"
   notify: restart fail2ban
 
+- name: Reload systemd daemon
+  ansible.builtin.systemd:
+    daemon_reload: true
+
 - name: Ensure fail2ban is enabled and running
-  ansible.builtin.service:
+  ansible.builtin.systemd:
     name: fail2ban
     enabled: true
     state: started
