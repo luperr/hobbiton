@@ -1,0 +1,4 @@
+---
+- name: ifreload
+  ansible.builtin.command: ifreload -a
+  changed_when: true

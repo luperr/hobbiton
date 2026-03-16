@@ -1,0 +1,30 @@
+# Managed by Ansible — do not edit manually.
+# Source: roles/proxmox_network/templates/interfaces.j2
+
+auto lo
+iface lo inet loopback
+
+iface {{ proxmox_phys_nic }} inet manual
+
+auto vmbr0
+iface vmbr0 inet static
+    address {{ proxmox_mgmt_address }}/{{ proxmox_mgmt_prefix }}
+    gateway {{ proxmox_mgmt_gateway }}
+    bridge-ports {{ proxmox_phys_nic }}
+    bridge-stp off
+    bridge-fd 0
+    # Management — main LAN
+{% for vlan in proxmox_vlans %}
+auto {{ proxmox_phys_nic }}.{{ vlan.vlan_id }}
+iface {{ proxmox_phys_nic }}.{{ vlan.vlan_id }} inet manual
+    vlan-raw-device {{ proxmox_phys_nic }}
+
+auto {{ vlan.bridge }}
+iface {{ vlan.bridge }} inet static
+    address {{ vlan.address }}/{{ vlan.prefix }}
+    gateway {{ vlan.gateway }}
+    bridge-ports {{ proxmox_phys_nic }}.{{ vlan.vlan_id }}
+    bridge-stp off
+    bridge-fd 0
+    # {{ vlan.comment }}
+{% endfor %}
