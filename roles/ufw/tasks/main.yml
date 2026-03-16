@@ -33,6 +33,14 @@
     rule: allow
     src: "{{ ufw_docker_subnet }}"
 
+- name: Block VLAN forwarding to management LAN
+  community.general.ufw:
+    rule: deny
+    route: true
+    src: "{{ item }}"
+    dest: "{{ ufw_lan_subnet }}"
+  loop: "{{ ufw_vlan_subnets }}"
+
 - name: Enable ufw
   community.general.ufw:
     state: enabled

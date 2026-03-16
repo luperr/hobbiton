@@ -8,6 +8,10 @@ ufw_lan_subnet: "192.168.1.0/24"
 ufw_proxmox_ui_port: 8006
 # Docker bridge networks — allow so containers can reach the host.
 ufw_docker_subnet: "172.16.0.0/12"
+# VLAN subnets — blocked from forwarding to management LAN via Proxmox host.
+ufw_vlan_subnets:
+  - "10.10.20.0/24"
+  - "10.10.30.0/24"
 
 # --- Network bridges (Phase 2) ---
 # Router (EdgeRouter X) is the gateway for each VLAN — no NAT on Proxmox.

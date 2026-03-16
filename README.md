@@ -13,7 +13,7 @@ Physical Host — Proxmox (192.168.1.85)
 │   ├── paperless      192.168.1.116  LXC 104
 │   └── cloudflared    192.168.1.154  LXC 106
 ├── vmbr1  — Services VLAN 20 (10.10.20.0/24)
-│   └── docker         192.168.1.161  LXC 107  ← pending VLAN migration
+│   └── docker         10.10.20.10    LXC 107
 └── vmbr2  — Monitoring VLAN 30 (10.10.30.0/24)
     └── (future monitoring stack)
 
@@ -44,7 +44,7 @@ pip install ansible
 | homeassistant | lxc_containers | 192.168.1.93 | 102 |
 | paperless | lxc_containers | 192.168.1.116 | 104 |
 | cloudflared | lxc_containers | 192.168.1.154 | 106 |
-| docker | lxc_services | 192.168.1.161 | 107 |
+| docker | lxc_services | 10.10.20.10 | 107 |
 
 ## Playbooks
 
@@ -84,6 +84,5 @@ Manual steps required before running `configure_network.yml`:
 
 ## Pending
 
-- Migrate docker LXC to VLAN 20 (update inventory IP to `10.10.20.10`)
-- Split cloudflared: management tunnel to Proxmox host, app tunnel to Docker LXC
+- Split cloudflared: management tunnel to Proxmox host, app tunnel to Docker LXC, decommission LXC 106
 - Add monitoring LXC on VLAN 30 (Prometheus + Grafana)
