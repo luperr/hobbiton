@@ -33,6 +33,13 @@
     rule: allow
     src: "{{ ufw_docker_subnet }}"
 
+- name: Allow monitoring VLAN to reach Proxmox API
+  community.general.ufw:
+    rule: allow
+    port: "{{ ufw_proxmox_ui_port }}"
+    proto: tcp
+    src: "{{ ufw_monitoring_subnet }}"
+
 - name: Block VLAN forwarding to management LAN
   community.general.ufw:
     rule: deny

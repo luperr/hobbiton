@@ -15,7 +15,9 @@ Physical Host — Proxmox (192.168.1.85)
 ├── vmbr1  — Services VLAN 20 (10.10.20.0/24)
 │   └── docker         10.10.20.10    LXC 107
 └── vmbr2  — Monitoring VLAN 30 (10.10.30.0/24)
-    └── (future monitoring stack)
+    ├── prometheus     10.10.30.10    LXC 103
+    ├── grafana        10.10.30.11    LXC 108
+    └── pve-exporter   10.10.30.12    LXC 109
 
 Network: EdgeRouter X — VLAN-aware APs (Unifi)
 Public access: Cloudflare tunnel — no inbound ports open
@@ -45,6 +47,9 @@ pip install ansible
 | paperless | lxc_containers | 192.168.1.116 | 104 |
 | cloudflared | lxc_containers | 192.168.1.154 | 106 |
 | docker | lxc_services | 10.10.20.10 | 107 |
+| prometheus | lxc_monitoring | 10.10.30.10 | 103 |
+| grafana | lxc_monitoring | 10.10.30.11 | 108 |
+| pve-exporter | lxc_monitoring | 10.10.30.12 | 109 |
 
 ## Playbooks
 
@@ -72,7 +77,11 @@ ansible-playbook site.yml -i inventory
 ansible-playbook harden_lxc.yml -i inventory --limit pihole
 
 # Bootstrap a new container (run once)
-ansible-playbook pve_onboard.yml -i inventory --limit <host> --user root --ask-pass
+# Step 1 — copy your SSH key into the container from the Proxmox host
+cat ~/.ssh/id_ed25519.pub | pct exec <vmid> -- tee /root/.ssh/authorized_keys
+
+# Step 2 — run onboarding
+ansible-playbook pve_onboard.yml -i inventory --limit <host> -e "ansible_user=root"
 ```
 
 ## Network setup
@@ -81,8 +90,13 @@ Manual steps required before running `configure_network.yml`:
 
 - [EdgeRouter X VLAN setup](docs/router_vlan_setup.md)
 - [Unifi WiFi VLAN setup](docs/unifi_vlan_setup.md)
+- [Monitoring stack setup](docs/monitoring_setup.md)
 
 ## Pending
 
-- Split cloudflared: management tunnel to Proxmox host, app tunnel to Docker LXC, decommission LXC 106
-- Add monitoring LXC on VLAN 30 (Prometheus + Grafana)
+- Deploy monitoring stack — see [docs/monitoring_setup.md](docs/monitoring_setup.md)
+- GitHub Actions lint workflow (GitHub-hosted runner)
+- GitHub Actions check workflow (`--check --diff` on PR, self-hosted runner)
+- GitHub Actions deploy workflow (manual trigger, self-hosted runner)
+- Self-hosted runner LXC (`runner_lxc` role + `provision_runner.yml`)
+- Re-evaluate Cloudflare tunnel setup (dual-tunnel issues between LXC 106 and Docker compose tunnel)

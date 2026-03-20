@@ -12,9 +12,11 @@ cloudflared    ansible_host=192.168.1.154  vmid=106
 [lxc_services]
 docker         ansible_host=10.10.20.10  vmid=107
 
-# Monitoring VLAN 30 (10.10.30.0/24) — uncomment when monitoring stack is deployed
+# Monitoring VLAN 30 (10.10.30.0/24)
 [lxc_monitoring]
-# monitoring ansible_host=10.10.30.10
+prometheus     ansible_host=10.10.30.10  vmid=103
+grafana        ansible_host=10.10.30.11  vmid=108
+pve-exporter   ansible_host=10.10.30.12  vmid=109
 
 [lxc_all:children]
 lxc_containers
