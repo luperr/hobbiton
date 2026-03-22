@@ -17,6 +17,8 @@ docker         ansible_host=10.10.20.10  vmid=107
 prometheus     ansible_host=10.10.30.10  vmid=103
 grafana        ansible_host=10.10.30.11  vmid=108
 pve-exporter   ansible_host=10.10.30.12  vmid=109
+loki           ansible_host=10.10.30.13  vmid=110
+umami          ansible_host=10.10.30.14  vmid=111
 
 [lxc_all:children]
 lxc_containers
