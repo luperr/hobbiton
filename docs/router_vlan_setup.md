@@ -177,6 +177,54 @@ ping 10.10.20.1       # Should fail from VLAN 30/40/50 — cross-VLAN blocked
 
 ---
 
+## SSH key access
+
+Add your SSH public key to the EdgeRouter so password auth is not required:
+
+```bash
+ssh ubnt@192.168.1.1
+configure
+set system login user ubnt authentication public-keys mykey type ssh-ed25519
+set system login user ubnt authentication public-keys mykey key <your-public-key>
+commit
+save
+```
+
+---
+
+## BLOCK_IN cross-VLAN exceptions
+
+By default BLOCK_IN drops all new connections from VLANs to protected networks.
+The following exceptions have been added for monitoring and log shipping.
+
+> **Important:** Rule ordering matters. Rule 2 (drop to PROTECT_NETWORKS) was renumbered to rule 10
+> to allow exception rules 3–5 to evaluate first.
+
+| Rule | Purpose | Source | Destination | Port | Proto |
+|---|---|---|---|---|---|
+| 3 | Prometheus scrapes pve_exporter | 10.10.30.0/24 | 192.168.1.85 | 8006 | tcp |
+| 4 | Prometheus scrapes cAdvisor | 10.10.30.0/24 | 10.10.20.10 | 8080 | tcp |
+| 5 | Docker LXC ships logs to Loki | 10.10.20.0/24 | 10.10.30.13 | 3100 | tcp |
+| 10 | Drop all to PROTECT_NETWORKS | any | PROTECT_NETWORKS | any | any |
+
+To add a new cross-VLAN exception for a new service, insert a rule numbered between 5 and 10:
+
+```bash
+configure
+
+set firewall name BLOCK_IN rule <number> action accept
+set firewall name BLOCK_IN rule <number> description '<description>'
+set firewall name BLOCK_IN rule <number> source address <source-cidr>
+set firewall name BLOCK_IN rule <number> destination address <dest-ip>
+set firewall name BLOCK_IN rule <number> destination port <port>
+set firewall name BLOCK_IN rule <number> protocol tcp
+
+commit
+save
+```
+
+---
+
 ## Rollback
 
 ```bash
@@ -216,8 +264,12 @@ Existing LAN, VLAN 10 (game server), and all current devices are unaffected.
 | ER-X gateway | 50 | 10.10.50.1 | |
 | Proxmox host (vmbr1) | 20 | 10.10.20.2 | Static, set in /etc/network/interfaces |
 | Proxmox host (vmbr2) | 30 | 10.10.30.2 | Static, set in /etc/network/interfaces |
-| docker-host LXC | 20 | 10.10.20.10 | Static, set in Proxmox |
-| monitoring LXC | 30 | 10.10.30.10 | Static, set in Proxmox |
+| docker LXC 107 | 20 | 10.10.20.10 | Static, set in Proxmox |
+| prometheus LXC 103 | 30 | 10.10.30.10 | Static, set in Proxmox |
+| grafana LXC 108 | 30 | 10.10.30.11 | Static, set in Proxmox |
+| pve-exporter LXC 109 | 30 | 10.10.30.12 | Static, set in Proxmox |
+| loki LXC 110 | 30 | 10.10.30.13 | Static, set in Proxmox |
+| umami LXC 111 | 30 | 10.10.30.14 | Static, set in Proxmox |
 | IoT devices | 40 | 10.10.40.100–200 | DHCP |
 | Guest devices | 50 | 10.10.50.100–200 | DHCP |
 
