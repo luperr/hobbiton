@@ -1,13 +1,26 @@
 [pvenodes]
 pve-node-1 ansible_host=192.168.1.85
 
-[lxc-containers]
-homeassistant ansible_host=192.168.1.93
-piehole ansible_host=192.168.1.87
-unifi ansible_host=192.168.1.91
-paperless ansible_host=192.168.1.116
+[lxc_containers]
+pihole         ansible_host=192.168.1.87   vmid=100
+unifi          ansible_host=192.168.1.91   vmid=101
+homeassistant  ansible_host=192.168.1.93   vmid=102
+paperless      ansible_host=192.168.1.116  vmid=104
+cloudflared    ansible_host=192.168.1.154  vmid=106
 
-[all:vars]
-ansible_user=ansible
-ansible_become=yes
-ansible_become_method=sudo
+# Services VLAN 20 (10.10.20.0/24)
+[lxc_services]
+docker         ansible_host=10.10.20.10  vmid=107
+
+# Monitoring VLAN 30 (10.10.30.0/24)
+[lxc_monitoring]
+prometheus     ansible_host=10.10.30.10  vmid=103
+grafana        ansible_host=10.10.30.11  vmid=108
+pve-exporter   ansible_host=10.10.30.12  vmid=109
+loki           ansible_host=10.10.30.13  vmid=110
+umami          ansible_host=10.10.30.14  vmid=111
+
+[lxc_all:children]
+lxc_containers
+lxc_services
+lxc_monitoring

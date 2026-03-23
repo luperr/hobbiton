@@ -1,0 +1,10 @@
+# Managed by Ansible — do not edit manually.
+# Source: roles/fail2ban/templates/jail.local.j2
+# Overrides jail.conf — survives package updates.
+
+[sshd]
+enabled  = true
+port     = {{ ssh_port }}
+maxretry = {{ fail2ban_ssh_maxretry }}
+bantime  = {{ fail2ban_ssh_bantime }}
+findtime = {{ fail2ban_ssh_findtime }}

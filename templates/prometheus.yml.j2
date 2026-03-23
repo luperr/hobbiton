@@ -1,0 +1,15 @@
+global:
+  scrape_interval: 15s
+  evaluation_interval: 15s
+
+scrape_configs:
+  - job_name: proxmox
+    metrics_path: /pve
+    params:
+      target: ['192.168.1.85']
+    static_configs:
+      - targets: ['10.10.30.12:9221']   # pve_exporter LXC 109
+
+  - job_name: docker_containers
+    static_configs:
+      - targets: ['10.10.20.10:8080']    # cAdvisor in LXC 107 — web, app, db, scraper, tunnel

@@ -1,0 +1,9 @@
+---
+- name: Harden LXC containers
+  hosts: lxc_all
+  become: true
+
+  roles:
+    - ssh_hardening
+    - fail2ban
+    - unattended_upgrades

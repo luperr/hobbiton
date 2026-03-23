@@ -1,0 +1,12 @@
+---
+# Host-specific overrides for pve-node-1.
+# Uncomment and set values here to override group_vars/pvenodes.yml defaults.
+
+# Example: lock Proxmox UI access to a single workstation instead of the whole LAN subnet.
+# ufw_lan_subnet: "192.168.1.50"
+
+# Management interface — used by proxmox_network role to preserve vmbr0 config.
+# Do not rely on ansible_default_ipv4 — it can resolve to the wrong interface.
+proxmox_mgmt_address: "192.168.1.85"
+proxmox_mgmt_prefix: "24"
+proxmox_mgmt_gateway: "192.168.1.1"

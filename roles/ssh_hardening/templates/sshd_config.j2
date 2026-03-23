@@ -1,0 +1,30 @@
+# Managed by Ansible — do not edit manually.
+# Source: roles/ssh_hardening/templates/sshd_config.j2
+
+Port {{ ssh_port }}
+
+# Authentication
+PermitRootLogin {{ ssh_permit_root_login }}
+PasswordAuthentication {{ ssh_password_authentication }}
+PubkeyAuthentication {{ ssh_pubkey_authentication }}
+AuthorizedKeysFile .ssh/authorized_keys
+MaxAuthTries {{ ssh_max_auth_tries }}
+{% if ssh_allowed_users | length > 0 %}
+AllowUsers {{ ssh_allowed_users | join(' ') }}
+{% endif %}
+
+# Session keepalive
+ClientAliveInterval {{ ssh_client_alive_interval }}
+ClientAliveCountMax {{ ssh_client_alive_count_max }}
+
+# PAM required for session setup on Debian even with pubkey auth
+UsePAM yes
+
+# Reduce attack surface
+X11Forwarding no
+PermitEmptyPasswords no
+IgnoreRhosts yes
+HostbasedAuthentication no
+
+# Subsystems
+Subsystem sftp /usr/lib/openssh/sftp-server

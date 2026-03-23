@@ -1,0 +1,31 @@
+---
+- name: Deploy Prometheus config
+  hosts: prometheus
+  tasks:
+    - name: Deploy prometheus.yml
+      ansible.builtin.template:
+        src: templates/prometheus.yml.j2
+        dest: /etc/prometheus/prometheus.yml
+        owner: root
+        group: root
+        mode: "0644"
+
+    - name: Restart Prometheus
+      ansible.builtin.systemd:
+        name: prometheus
+        state: restarted
+
+- name: Create Proxmox service account for pve_exporter
+  hosts: pvenodes
+  tasks:
+    - name: Create prometheus@pve user
+      ansible.builtin.command: pveum user add prometheus@pve --password {{ pve_exporter_password }}
+      register: pveum_add
+      failed_when: pveum_add.rc != 0 and 'already exists' not in pveum_add.stderr
+      changed_when: pveum_add.rc == 0
+      no_log: true
+
+    - name: Assign PVEAuditor role
+      ansible.builtin.command: pveum aclmod / -user prometheus@pve -role PVEAuditor
+      register: pveum_acl
+      changed_when: pveum_acl.rc == 0
