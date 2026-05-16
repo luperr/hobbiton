@@ -1,0 +1,16 @@
+# Managed by Ansible — do not edit manually.
+services:
+  opentrashmail:
+    image: "{{ opentrashmail_image }}:{{ opentrashmail_image_tag }}"
+    container_name: opentrashmail
+    restart: unless-stopped
+    ports:
+      - "{{ opentrashmail_smtp_port }}:25"
+      - "{{ opentrashmail_http_port }}:80"
+    volumes:
+      - mail_data:/var/mail
+    environment:
+      - "DOMAIN={{ opentrashmail_domain }}"
+
+volumes:
+  mail_data:

@@ -1,0 +1,15 @@
+---
+- name: Harden OpenTrashMail LXC
+  hosts: opentrashmail
+  become: true
+  roles:
+    - ssh_hardening
+    - fail2ban
+    - unattended_upgrades
+
+- name: Deploy OpenTrashMail
+  hosts: opentrashmail
+  become: true
+  roles:
+    - opentrashmail
+    - docker_hardening

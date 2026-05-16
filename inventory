@@ -7,6 +7,7 @@ unifi          ansible_host=192.168.1.91   vmid=101
 homeassistant  ansible_host=192.168.1.93   vmid=102
 paperless      ansible_host=192.168.1.116  vmid=104
 cloudflared    ansible_host=192.168.1.154  vmid=106
+opentrashmail  ansible_host=192.168.1.155  vmid=112
 
 # Services VLAN 20 (10.10.20.0/24)
 [lxc_services]

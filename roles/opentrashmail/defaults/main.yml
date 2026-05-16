@@ -1,0 +1,7 @@
+---
+opentrashmail_data_dir: /opt/opentrashmail
+opentrashmail_domain: example.com
+opentrashmail_http_port: 8080
+opentrashmail_smtp_port: 25
+opentrashmail_image: hascheksolutions/opentrashmail
+opentrashmail_image_tag: latest

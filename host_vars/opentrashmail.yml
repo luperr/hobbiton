@@ -1,0 +1,5 @@
+---
+opentrashmail_data_dir: /opt/opentrashmail
+opentrashmail_domain: exilemail.xyz
+opentrashmail_http_port: 8080
+opentrashmail_smtp_port: 25
