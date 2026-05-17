@@ -15,6 +15,9 @@ ssh_client_alive_count_max: 2
 ssh_allowed_users:
   - ansible
 
+# --- Network ---
+ufw_lan_subnet: "192.168.1.0/24"
+
 # --- fail2ban ---
 fail2ban_ssh_maxretry: 5
 fail2ban_ssh_bantime: 3600

@@ -6,10 +6,12 @@
     - ssh_hardening
     - fail2ban
     - unattended_upgrades
+    - ufw
 
 - name: Deploy OpenTrashMail
   hosts: opentrashmail
   become: true
   roles:
-    - opentrashmail
+    - docker
     - docker_hardening
+    - opentrashmail

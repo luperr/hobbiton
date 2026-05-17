@@ -1,0 +1,12 @@
+---
+# List of extra UFW rules to apply after the base policy.
+# Each item maps directly to community.general.ufw module parameters.
+# Example:
+#   ufw_rules:
+#     - rule: allow
+#       port: "8080"
+#       proto: tcp
+#       src: "192.168.1.0/24"
+ufw_rules: []
+ufw_deny_forward_subnets: []
+ufw_lan_subnet: ""
