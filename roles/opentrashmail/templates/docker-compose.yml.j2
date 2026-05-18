@@ -10,7 +10,11 @@ services:
     volumes:
       - mail_data:/var/mail
     environment:
-      - "DOMAIN={{ opentrashmail_domain }}"
+      - "DOMAINS={{ opentrashmail_domain }}"
+      - "URL={{ opentrashmail_url }}"
+      - "DISCARD_UNKNOWN={{ opentrashmail_discard_unknown }}"
+      - "SHOW_ACCOUNT_LIST={{ opentrashmail_show_account_list }}"
+      - "ADMIN={{ opentrashmail_admin }}"
 
 volumes:
   mail_data:
