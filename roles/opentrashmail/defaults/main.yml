@@ -1,0 +1,11 @@
+---
+opentrashmail_data_dir: /opt/opentrashmail
+opentrashmail_domain: example.com
+opentrashmail_url: "http://localhost:8080"
+opentrashmail_http_port: 8080
+opentrashmail_smtp_port: 25
+opentrashmail_image: hascheksolutions/opentrashmail
+opentrashmail_image_tag: latest
+opentrashmail_discard_unknown: true
+opentrashmail_show_account_list: false
+opentrashmail_admin: ""

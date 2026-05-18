@@ -1,18 +1,27 @@
 ---
 # Proxmox host specific vars — overrides all.yml where needed.
 
-# --- UFW (Phase 1) ---
-# Restrict Proxmox web UI (8006) to this subnet.
-# Set to a single workstation IP for tighter control: "192.168.1.50"
-ufw_lan_subnet: "192.168.1.0/24"
+# --- UFW ---
 ufw_proxmox_ui_port: 8006
-# Docker bridge networks — allow so containers can reach the host.
 ufw_docker_subnet: "172.16.0.0/12"
-# VLAN subnets — blocked from forwarding to management LAN via Proxmox host.
-ufw_vlan_subnets:
+ufw_monitoring_subnet: "10.10.30.0/24"
+
+ufw_rules:
+  - rule: allow
+    port: "{{ ufw_proxmox_ui_port }}"
+    proto: tcp
+    src: "{{ ufw_lan_subnet }}"
+  - rule: allow
+    src: "{{ ufw_docker_subnet }}"
+  - rule: allow
+    port: "{{ ufw_proxmox_ui_port }}"
+    proto: tcp
+    src: "{{ ufw_monitoring_subnet }}"
+
+ufw_deny_forward_subnets:
   - "10.10.20.0/24"
   - "10.10.30.0/24"
-ufw_monitoring_subnet: "10.10.30.0/24"
+  - "10.10.60.0/24"
 
 # --- Network bridges (Phase 2) ---
 # Router (EdgeRouter X) is the gateway for each VLAN — no NAT on Proxmox.
@@ -31,3 +40,9 @@ proxmox_vlans:
     prefix: "24"
     gateway: "10.10.30.1"
     comment: "Monitoring VLAN 30"
+  - vlan_id: 60
+    bridge: vmbr3
+    address: "10.10.60.2"
+    prefix: "24"
+    gateway: "10.10.60.1"
+    comment: "exilemail VLAN 60"

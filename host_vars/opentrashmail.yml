@@ -1,0 +1,17 @@
+---
+opentrashmail_data_dir: /opt/opentrashmail
+opentrashmail_domain: exilemail.xyz
+opentrashmail_url: "https://mail.exilemail.xyz"
+opentrashmail_http_port: 8080
+opentrashmail_smtp_port: 25
+opentrashmail_discard_unknown: false
+opentrashmail_admin: "admin@exilemail.xyz"
+
+ufw_rules:
+  - rule: allow
+    port: "{{ opentrashmail_smtp_port }}"
+    proto: tcp
+  - rule: allow
+    port: "{{ opentrashmail_http_port }}"
+    proto: tcp
+    src: "{{ ufw_lan_subnet }}"
