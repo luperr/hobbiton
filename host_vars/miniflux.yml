@@ -1,0 +1,8 @@
+---
+miniflux_http_port: 8080
+
+ufw_rules:
+  - rule: allow
+    port: "{{ miniflux_http_port }}"
+    proto: tcp
+    src: "{{ ufw_lan_subnet }}"
