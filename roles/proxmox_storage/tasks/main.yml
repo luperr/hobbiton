@@ -1,0 +1,17 @@
+---
+- name: Read LXC config
+  ansible.builtin.command: pct config {{ item.vmid }}
+  register: pct_configs
+  changed_when: false
+  loop: "{{ proxmox_lxc_mounts }}"
+  loop_control:
+    label: "vmid={{ item.vmid }}"
+
+- name: Attach mount point to LXC
+  ansible.builtin.command: >
+    pct set {{ item.item.vmid }}
+    -mp{{ item.item.mp_index }} {{ item.item.pool }}:{{ item.item.size }},mp={{ item.item.mp }}
+  when: "'mp' + (item.item.mp_index | string) not in item.stdout"
+  loop: "{{ pct_configs.results }}"
+  loop_control:
+    label: "vmid={{ item.item.vmid }} mp={{ item.item.mp }}"

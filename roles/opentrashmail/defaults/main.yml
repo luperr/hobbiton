@@ -1,5 +1,6 @@
 ---
 opentrashmail_data_dir: /opt/opentrashmail
+opentrashmail_data_mount: /mnt/opentrashmail
 opentrashmail_domain: example.com
 opentrashmail_url: "http://localhost:8080"
 opentrashmail_http_port: 8080

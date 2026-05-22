@@ -1,0 +1,6 @@
+---
+- name: Configure LXC storage mounts on Proxmox host
+  hosts: pvenodes
+  become: true
+  roles:
+    - proxmox_storage
