@@ -1,7 +1,13 @@
 ---
 - name: Check data mount is present
+  ansible.builtin.command: mountpoint -q {{ opentrashmail_data_mount }}
+  changed_when: false
+  failed_when: false
+  register: mount_check
+
+- name: Assert data mount is present
   ansible.builtin.assert:
-    that: ansible_mounts | selectattr('mount', 'equalto', opentrashmail_data_mount) | list | length > 0
+    that: mount_check.rc == 0
     fail_msg: "{{ opentrashmail_data_mount }} is not mounted — run configure_storage.yml first"
 
 - name: Stop and disable postfix (conflicts with SMTP port 25)
