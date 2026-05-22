@@ -70,6 +70,7 @@ ansible-galaxy collection install -r requirements.yml
 | `harden_docker.yml` | lxc_services | Docker daemon hardening |
 | `deploy_opentrashmail.yml` | opentrashmail | Full OpenTrashMail service deploy (requires configure_storage.yml first) |
 | `deploy_monitoring.yml` | prometheus, pvenodes | Prometheus scrape config + Proxmox API user |
+| `update.yml` | pvenodes, lxc_exilemail | App-level updates — community-script LXCs via update-apps.sh + Docker image pull for opentrashmail. Add `-e dry_run=yes` to check without applying. |
 | `pve_onboard.yml` | all | Bootstrap ansible user (run once as root per new host) |
 
 ## Usage
