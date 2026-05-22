@@ -1,4 +1,9 @@
 ---
+- name: Check data mount is present
+  ansible.builtin.assert:
+    that: ansible_mounts | selectattr('mount', 'equalto', opentrashmail_data_mount) | list | length > 0
+    fail_msg: "{{ opentrashmail_data_mount }} is not mounted — run configure_storage.yml first"
+
 - name: Stop and disable postfix (conflicts with SMTP port 25)
   ansible.builtin.systemd:
     name: postfix
@@ -6,13 +11,25 @@
     enabled: false
   failed_when: false
 
-- name: Create data directory
+- name: Create app directory
   ansible.builtin.file:
     path: "{{ opentrashmail_data_dir }}"
     state: directory
     owner: root
     group: root
     mode: "0750"
+
+- name: Create data mount subdirectories
+  ansible.builtin.file:
+    path: "{{ opentrashmail_data_mount }}/{{ item }}"
+    state: directory
+    owner: root
+    group: root
+    mode: "0750"
+  loop:
+    - mail
+    - data
+    - logs
 
 - name: Deploy docker-compose.yml
   ansible.builtin.template:

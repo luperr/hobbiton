@@ -27,6 +27,13 @@ ufw_deny_forward_subnets:
 # Router (EdgeRouter X) is the gateway for each VLAN — no NAT on Proxmox.
 proxmox_phys_nic: "eno1"
 
+proxmox_lxc_mounts:
+  - vmid: 112
+    mp_index: 0
+    pool: lpool
+    size: 50G
+    mp: /mnt/opentrashmail
+
 proxmox_vlans:
   - vlan_id: 20
     bridge: vmbr1
