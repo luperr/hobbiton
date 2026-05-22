@@ -30,8 +30,7 @@ proxmox_phys_nic: "eno1"
 proxmox_lxc_mounts:
   - vmid: 112
     mp_index: 0
-    pool: lpool
-    size: 50G
+    host_path: /lpool/opentrashmail
     mp: /mnt/opentrashmail
 
 proxmox_vlans:

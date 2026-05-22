@@ -1,4 +1,15 @@
 ---
+- name: Create bind mount source directory on host
+  ansible.builtin.file:
+    path: "{{ item.host_path }}"
+    state: directory
+    owner: root
+    group: root
+    mode: "0750"
+  loop: "{{ proxmox_lxc_mounts }}"
+  loop_control:
+    label: "{{ item.host_path }}"
+
 - name: Read LXC config
   ansible.builtin.command: pct config {{ item.vmid }}
   register: pct_configs
@@ -7,11 +18,11 @@
   loop_control:
     label: "vmid={{ item.vmid }}"
 
-- name: Attach mount point to LXC
+- name: Attach bind mount to LXC
   ansible.builtin.command: >
     pct set {{ item.item.vmid }}
-    -mp{{ item.item.mp_index }} {{ item.item.pool }}:{{ item.item.size }},mp={{ item.item.mp }}
-  when: "'mp' + (item.item.mp_index | string) not in item.stdout"
+    -mp{{ item.item.mp_index }} {{ item.item.host_path }},mp={{ item.item.mp }}
+  when: "('mp' + (item.item.mp_index | string) + ':') not in item.stdout"
   loop: "{{ pct_configs.results }}"
   loop_control:
     label: "vmid={{ item.item.vmid }} mp={{ item.item.mp }}"
