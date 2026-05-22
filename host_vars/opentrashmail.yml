@@ -1,5 +1,6 @@
 ---
 opentrashmail_data_dir: /opt/opentrashmail
+compose_project_dir: /opt/opentrashmail
 opentrashmail_data_mount: /mnt/opentrashmail
 opentrashmail_domain: exilemail.xyz
 opentrashmail_url: "https://mail.exilemail.xyz"
