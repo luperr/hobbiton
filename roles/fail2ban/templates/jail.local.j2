@@ -2,9 +2,6 @@
 # Source: roles/fail2ban/templates/jail.local.j2
 # Overrides jail.conf — survives package updates.
 
-[DEFAULT]
-ignoreip = 127.0.0.1/8 ::1 {{ ufw_lan_subnet }}
-
 [sshd]
 enabled  = true
 port     = {{ ssh_port }}
