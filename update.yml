@@ -1,15 +1,73 @@
 ---
 # Update all managed services.
-# Runs /usr/bin/update on each community-script LXC, and docker compose pull
-# on any host with compose_project_dir defined.
 #
-# lxc_services (docker LXC) is excluded — updated manually per release.
+# Play 1: community-script LXCs — app-level updates via update-apps.sh (runs on Proxmox host).
+#         Containers without /usr/bin/update (e.g. docker LXC) are silently skipped.
 #
-# Usage:
-#   ansible-playbook update.yml              # all hosts
-#   ansible-playbook update.yml --limit pihole
+# Play 2: Docker Compose services (lxc_exilemail) — pull latest images and recreate.
+#
+# Dry-run (check available updates without applying):
+#   ansible-playbook update.yml -e dry_run=yes
 
-- name: Update services
-  hosts: lxc_all:!lxc_services
-  roles:
-    - update
+- name: Update community-script LXC applications
+  hosts: pvenodes
+  become: true
+  vars:
+    dry_run: "no"
+  tasks:
+    - name: Download update-apps script
+      ansible.builtin.get_url:
+        url: https://raw.githubusercontent.com/community-scripts/ProxmoxVE/main/tools/pve/update-apps.sh
+        dest: /tmp/update-apps.sh
+        mode: "0755"
+        force: true
+
+    - name: Run update-apps
+      ansible.builtin.command: bash /tmp/update-apps.sh
+      environment:
+        var_container: "all_running"
+        var_unattended: "yes"
+        var_skip_confirm: "yes"
+        var_backup: "no"
+        var_continue_on_error: "yes"
+        var_dry_run: "{{ dry_run }}"
+      register: update_result
+      changed_when: false
+
+    - name: Show update summary
+      ansible.builtin.debug:
+        var: update_result.stdout_lines
+
+- name: Update Docker Compose services
+  hosts: lxc_exilemail
+  become: true
+  vars:
+    dry_run: "no"
+  tasks:
+    - name: Pull latest images
+      ansible.builtin.command: docker compose pull
+      args:
+        chdir: "{{ opentrashmail_data_dir }}"
+      register: pull_result
+      changed_when: "'Downloaded newer image' in pull_result.stdout or 'Pull complete' in pull_result.stdout"
+      when: dry_run != "yes"
+
+    - name: Recreate containers with new images
+      community.docker.docker_compose_v2:
+        project_src: "{{ opentrashmail_data_dir }}"
+        state: present
+        recreate: auto
+      when: dry_run != "yes"
+
+    - name: Dry run — show current image digests
+      ansible.builtin.command: docker compose images
+      args:
+        chdir: "{{ opentrashmail_data_dir }}"
+      register: images_result
+      changed_when: false
+      when: dry_run == "yes"
+
+    - name: Show image info
+      ansible.builtin.debug:
+        var: images_result.stdout_lines
+      when: dry_run == "yes"
