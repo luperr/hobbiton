@@ -11,13 +11,18 @@ Physical Host — Proxmox (192.168.1.85)
 │   ├── unifi          192.168.1.91   LXC 101
 │   ├── homeassistant  192.168.1.93   LXC 102
 │   ├── paperless      192.168.1.116  LXC 104
-│   └── cloudflared    192.168.1.154  LXC 106
+│   ├── cloudflared    192.168.1.154  LXC 106
+│   └── miniflux       192.168.1.177  LXC 113
 ├── vmbr1  — Services VLAN 20 (10.10.20.0/24)
 │   └── docker         10.10.20.10    LXC 107
-└── vmbr2  — Monitoring VLAN 30 (10.10.30.0/24)
-    ├── prometheus     10.10.30.10    LXC 103
-    ├── grafana        10.10.30.11    LXC 108
-    └── pve-exporter   10.10.30.12    LXC 109
+├── vmbr2  — Monitoring VLAN 30 (10.10.30.0/24)
+│   ├── prometheus     10.10.30.10    LXC 103
+│   ├── grafana        10.10.30.11    LXC 108
+│   ├── pve-exporter   10.10.30.12    LXC 109
+│   ├── loki           10.10.30.13    LXC 110
+│   └── umami          10.10.30.14    LXC 111
+└── vmbr3  — ExileMail VLAN 60 (10.10.60.0/24)
+    └── opentrashmail  10.10.60.10    LXC 112
 
 Network: EdgeRouter X — VLAN-aware APs (Unifi)
 Public access: Cloudflare tunnel — no inbound ports open
@@ -26,14 +31,12 @@ Public access: Cloudflare tunnel — no inbound ports open
 ## Prerequisites
 
 - Python 3 + virtualenv
-- Ansible installed in `.venv`
-- `community.general` collection: `ansible-galaxy collection install community.general`
-- SSH key deployed to all hosts via `pve_onboard.yml`
 
 ```bash
 python3 -m venv .venv
 source .venv/bin/activate
-pip install ansible
+pip install -r requirements.txt
+ansible-galaxy collection install -r requirements.yml
 ```
 
 ## Inventory
@@ -46,21 +49,29 @@ pip install ansible
 | homeassistant | lxc_containers | 192.168.1.93 | 102 |
 | paperless | lxc_containers | 192.168.1.116 | 104 |
 | cloudflared | lxc_containers | 192.168.1.154 | 106 |
+| miniflux | lxc_containers | 192.168.1.177 | 113 |
 | docker | lxc_services | 10.10.20.10 | 107 |
 | prometheus | lxc_monitoring | 10.10.30.10 | 103 |
 | grafana | lxc_monitoring | 10.10.30.11 | 108 |
 | pve-exporter | lxc_monitoring | 10.10.30.12 | 109 |
+| loki | lxc_monitoring | 10.10.30.13 | 110 |
+| umami | lxc_monitoring | 10.10.30.14 | 111 |
+| opentrashmail | lxc_exilemail | 10.10.60.10 | 112 |
 
 ## Playbooks
 
 | Playbook | Targets | What it does |
 |---|---|---|
-| `site.yml` | all | Full stack — run all playbooks in order |
+| `site.yml` | all | Full stack — harden + network + storage + lxc hardening |
 | `harden_proxmox_host.yml` | pvenodes | SSH, fail2ban, UFW, unattended upgrades |
-| `configure_network.yml` | pvenodes | VLAN bridges (vmbr1, vmbr2) |
+| `configure_network.yml` | pvenodes | VLAN bridges (vmbr1–vmbr3) |
+| `configure_storage.yml` | pvenodes | LXC bind mounts (prerequisite for deploy_opentrashmail.yml) |
 | `harden_lxc.yml` | lxc_all | SSH, fail2ban, unattended upgrades |
 | `harden_docker.yml` | lxc_services | Docker daemon hardening |
-| `pve_onboard.yml` | all | Bootstrap ansible user (run once as root) |
+| `deploy_opentrashmail.yml` | opentrashmail | Full OpenTrashMail service deploy (requires configure_storage.yml first) |
+| `deploy_monitoring.yml` | prometheus, pvenodes | Prometheus scrape config + Proxmox API user |
+| `update.yml` | pvenodes, lxc_exilemail | App-level updates — community-script LXCs via update-apps.sh + Docker image pull for opentrashmail. Add `-e dry_run=yes` to check without applying. |
+| `pve_onboard.yml` | all | Bootstrap ansible user (run once as root per new host) |
 
 ## Usage
 
@@ -92,11 +103,9 @@ Manual steps required before running `configure_network.yml`:
 - [Unifi WiFi VLAN setup](docs/unifi_vlan_setup.md)
 - [Monitoring stack setup](docs/monitoring_setup.md)
 
-## Pending
+## Known gaps
 
-- Deploy monitoring stack — see [docs/monitoring_setup.md](docs/monitoring_setup.md)
-- GitHub Actions lint workflow (GitHub-hosted runner)
-- GitHub Actions check workflow (`--check --diff` on PR, self-hosted runner)
-- GitHub Actions deploy workflow (manual trigger, self-hosted runner)
-- Self-hosted runner LXC (`runner_lxc` role + `provision_runner.yml`)
-- Re-evaluate Cloudflare tunnel setup (dual-tunnel issues between LXC 106 and Docker compose tunnel)
+- **miniflux** — in inventory but no deploy playbook or role yet
+- **Monitoring stack** — Prometheus, Grafana, Loki, and cAdvisor are provisioned manually; see [docs/monitoring_setup.md](docs/monitoring_setup.md)
+- **UFW on lxc_containers** — SSH-hardened but no firewall applied to pihole, unifi, homeassistant, paperless, cloudflared, miniflux
+- **No CI/CD** — playbooks are run locally; no linting or check-mode pipeline
