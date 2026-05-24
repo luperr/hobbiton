@@ -1,0 +1,10 @@
+---
+- name: Deploy Caddy reverse proxy
+  hosts: caddy
+  roles:
+    - caddy
+
+- name: Configure Pihole LAN DNS records
+  hosts: pihole
+  roles:
+    - pihole

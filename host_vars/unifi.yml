@@ -1,0 +1,6 @@
+---
+caddy_proxy:
+  hostname: unifi.lan
+  scheme: https
+  port: 8443
+  tls_insecure: true

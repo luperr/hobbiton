@@ -12,7 +12,8 @@ Physical Host — Proxmox (192.168.1.85)
 │   ├── homeassistant  192.168.1.93   LXC 102
 │   ├── paperless      192.168.1.116  LXC 104
 │   ├── cloudflared    192.168.1.154  LXC 106
-│   └── miniflux       192.168.1.177  LXC 113
+│   ├── miniflux       192.168.1.177  LXC 113
+│   └── caddy          192.168.1.178  LXC 114
 ├── vmbr1  — Services VLAN 20 (10.10.20.0/24)
 │   └── docker         10.10.20.10    LXC 107
 ├── vmbr2  — Monitoring VLAN 30 (10.10.30.0/24)
@@ -25,7 +26,7 @@ Physical Host — Proxmox (192.168.1.85)
     └── opentrashmail  10.10.60.10    LXC 112
 
 Network: EdgeRouter X — VLAN-aware APs (Unifi)
-Public access: Cloudflare tunnel — no inbound ports open
+Public access: Cloudflare tunnel — no inbound ports open (except on vmbr3 port 25 to allow emails)
 ```
 
 ## Prerequisites
@@ -50,6 +51,7 @@ ansible-galaxy collection install -r requirements.yml
 | paperless | lxc_containers | 192.168.1.116 | 104 |
 | cloudflared | lxc_containers | 192.168.1.154 | 106 |
 | miniflux | lxc_containers | 192.168.1.177 | 113 |
+| caddy | lxc_containers | 192.168.1.178 | 114 |
 | docker | lxc_services | 10.10.20.10 | 107 |
 | prometheus | lxc_monitoring | 10.10.30.10 | 103 |
 | grafana | lxc_monitoring | 10.10.30.11 | 108 |
@@ -69,6 +71,7 @@ ansible-galaxy collection install -r requirements.yml
 | `harden_lxc.yml` | lxc_all | SSH, fail2ban, unattended upgrades |
 | `harden_docker.yml` | lxc_services | Docker daemon hardening |
 | `deploy_opentrashmail.yml` | opentrashmail | Full OpenTrashMail service deploy (requires configure_storage.yml first) |
+| `deploy_caddy.yml` | caddy, pihole | Caddy reverse proxy + Pihole `.lan` DNS records |
 | `deploy_monitoring.yml` | prometheus, pvenodes | Prometheus scrape config + Proxmox API user |
 | `update.yml` | pvenodes, lxc_exilemail | App-level updates — community-script LXCs via update-apps.sh + Docker image pull for opentrashmail. Add `-e dry_run=yes` to check without applying. |
 | `pve_onboard.yml` | all | Bootstrap ansible user (run once as root per new host) |
@@ -105,7 +108,8 @@ Manual steps required before running `configure_network.yml`:
 
 ## Known gaps
 
-- **miniflux** — in inventory but no deploy playbook or role yet
+- **miniflux** — in inventory and proxied via Caddy, but no deploy playbook or role yet
+- **caddy TLS** — currently serving HTTP only on `.lan`; upgrade to `tls internal` for self-signed LAN certs if needed
 - **Monitoring stack** — Prometheus, Grafana, Loki, and cAdvisor are provisioned manually; see [docs/monitoring_setup.md](docs/monitoring_setup.md)
 - **UFW on lxc_containers** — SSH-hardened but no firewall applied to pihole, unifi, homeassistant, paperless, cloudflared, miniflux
 - **No CI/CD** — playbooks are run locally; no linting or check-mode pipeline

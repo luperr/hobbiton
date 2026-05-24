@@ -1,0 +1,22 @@
+# Managed by Ansible — do not edit manually
+
+{% for host in groups['lxc_all'] | sort %}
+{% if hostvars[host].caddy_proxy is defined %}
+{% set proxy = hostvars[host].caddy_proxy %}
+{{ proxy.hostname }} {
+	tls internal
+{% if proxy.tls_insecure | default(false) %}
+	reverse_proxy {{ proxy.scheme }}://{{ hostvars[host].ansible_host }}:{{ proxy.port }} {
+		transport http {
+			tls_insecure_skip_verify
+		}
+	}
+{% else %}
+	reverse_proxy {{ proxy.scheme }}://{{ hostvars[host].ansible_host }}:{{ proxy.port }} {
+		header_up Host {host}
+	}
+{% endif %}
+}
+
+{% endif %}
+{% endfor %}

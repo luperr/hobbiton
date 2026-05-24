@@ -8,6 +8,11 @@ opentrashmail_smtp_port: 25
 opentrashmail_discard_unknown: true
 opentrashmail_admin: "admin@exilemail.xyz"
 
+caddy_proxy:
+  hostname: opentrashmail.lan
+  scheme: http
+  port: 8080
+
 ufw_rules:
   - rule: allow
     port: "{{ opentrashmail_smtp_port }}"

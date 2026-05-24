@@ -1,0 +1,5 @@
+---
+caddy_proxy:
+  hostname: homeassistant.lan
+  scheme: http
+  port: 8123

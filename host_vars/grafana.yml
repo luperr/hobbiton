@@ -1,0 +1,5 @@
+---
+caddy_proxy:
+  hostname: grafana.lan
+  scheme: http
+  port: 3000

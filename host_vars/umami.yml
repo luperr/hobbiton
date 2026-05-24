@@ -1,0 +1,5 @@
+---
+caddy_proxy:
+  hostname: umami.lan
+  scheme: http
+  port: 3000

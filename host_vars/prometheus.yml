@@ -1,0 +1,5 @@
+---
+caddy_proxy:
+  hostname: prometheus.lan
+  scheme: http
+  port: 9090

@@ -8,6 +8,7 @@ homeassistant  ansible_host=192.168.1.93   vmid=102
 paperless      ansible_host=192.168.1.116  vmid=104
 cloudflared    ansible_host=192.168.1.154  vmid=106
 miniflux       ansible_host=192.168.1.177  vmid=113
+caddy          ansible_host=192.168.1.178  vmid=114
 
 # exilemail VLAN 60 (10.10.60.0/24)
 [lxc_exilemail]

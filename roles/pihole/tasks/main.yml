@@ -1,0 +1,12 @@
+---
+- name: Build DNS hosts list
+  ansible.builtin.set_fact:
+    pihole_dns_hosts: "{{ pihole_dns_hosts | default([]) + [hostvars['caddy'].ansible_host + ' ' + hostvars[item].caddy_proxy.hostname] }}"
+  loop: "{{ groups['lxc_all'] | sort }}"
+  when: hostvars[item].caddy_proxy is defined
+
+- name: Configure Pi-hole DNS hosts
+  ansible.builtin.command:
+    cmd: pihole-FTL --config dns.hosts {{ pihole_dns_hosts | to_json | quote }}
+  changed_when: true
+  notify: Restart pihole-FTL

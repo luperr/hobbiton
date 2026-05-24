@@ -1,0 +1,5 @@
+---
+caddy_proxy:
+  hostname: paperless.lan
+  scheme: http
+  port: 8000

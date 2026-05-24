@@ -1,0 +1,5 @@
+---
+caddy_proxy:
+  hostname: pihole.lan
+  scheme: http
+  port: 80

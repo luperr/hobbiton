@@ -1,5 +1,11 @@
 ---
 miniflux_http_port: 8080
+miniflux_fetch_private_network_feeds: 1
+
+caddy_proxy:
+  hostname: miniflux.lan
+  scheme: http
+  port: "{{ miniflux_http_port }}"
 
 ufw_rules:
   - rule: allow
