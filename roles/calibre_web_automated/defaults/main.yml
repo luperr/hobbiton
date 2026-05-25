@@ -1,0 +1,15 @@
+---
+calibre_data_dir: /opt/calibre-web-automated
+calibre_data_mount: /mnt/calibre
+
+calibre_image: crocodilestick/calibre-web-automated
+calibre_image_tag: latest
+
+calibre_http_port: 8083
+
+calibre_puid: 1000
+calibre_pgid: 1000
+calibre_tz: Australia/Sydney
+
+calibre_hardcover_token: ""
+calibre_network_share_mode: "false"

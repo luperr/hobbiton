@@ -3,8 +3,8 @@
   ansible.builtin.file:
     path: "{{ item.host_path }}"
     state: directory
-    owner: root
-    group: root
+    owner: "{{ item.owner | default('root') }}"
+    group: "{{ item.group | default('root') }}"
     mode: "0750"
   loop: "{{ proxmox_lxc_mounts }}"
   loop_control:
