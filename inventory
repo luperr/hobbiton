@@ -10,6 +10,7 @@ cloudflared    ansible_host=192.168.1.154  vmid=106
 miniflux       ansible_host=192.168.1.177  vmid=113
 caddy          ansible_host=192.168.1.178  vmid=114
 calibre        ansible_host=192.168.1.179  vmid=115
+actual         ansible_host=192.168.1.180  vmid=116
 
 # exilemail VLAN 60 (10.10.60.0/24)
 [lxc_exilemail]
