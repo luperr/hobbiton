@@ -32,6 +32,12 @@ proxmox_lxc_mounts:
     mp_index: 0
     host_path: /lpool/opentrashmail
     mp: /mnt/opentrashmail
+  - vmid: 115
+    mp_index: 0
+    host_path: /lpool/calibre
+    mp: /mnt/calibre
+    owner: "100000"
+    group: "100000"
 
 proxmox_vlans:
   - vlan_id: 20

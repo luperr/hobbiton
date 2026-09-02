@@ -1,0 +1,17 @@
+---
+- name: Harden Calibre-Web-Automated LXC
+  hosts: calibre
+  become: true
+  roles:
+    - ssh_hardening
+    - fail2ban
+    - unattended_upgrades
+    - ufw
+
+- name: Deploy Calibre-Web-Automated
+  hosts: calibre
+  become: true
+  roles:
+    - docker
+    - docker_hardening
+    - calibre_web_automated

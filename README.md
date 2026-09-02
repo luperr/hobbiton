@@ -13,7 +13,9 @@ Physical Host — Proxmox (192.168.1.85)
 │   ├── paperless      192.168.1.116  LXC 104
 │   ├── cloudflared    192.168.1.154  LXC 106
 │   ├── miniflux       192.168.1.177  LXC 113
-│   └── caddy          192.168.1.178  LXC 114
+│   ├── caddy          192.168.1.178  LXC 114
+│   ├── calibre        192.168.1.179  LXC 115
+│   └── actual         192.168.1.180  LXC 116
 ├── vmbr1  — Services VLAN 20 (10.10.20.0/24)
 │   └── docker         10.10.20.10    LXC 107
 ├── vmbr2  — Monitoring VLAN 30 (10.10.30.0/24)
@@ -52,6 +54,8 @@ ansible-galaxy collection install -r requirements.yml
 | cloudflared | lxc_containers | 192.168.1.154 | 106 |
 | miniflux | lxc_containers | 192.168.1.177 | 113 |
 | caddy | lxc_containers | 192.168.1.178 | 114 |
+| calibre | lxc_containers | 192.168.1.179 | 115 |
+| actual | lxc_containers | 192.168.1.180 | 116 |
 | docker | lxc_services | 10.10.20.10 | 107 |
 | prometheus | lxc_monitoring | 10.10.30.10 | 103 |
 | grafana | lxc_monitoring | 10.10.30.11 | 108 |
@@ -67,10 +71,12 @@ ansible-galaxy collection install -r requirements.yml
 | `site.yml` | all | Full stack — harden + network + storage + lxc hardening |
 | `harden_proxmox_host.yml` | pvenodes | SSH, fail2ban, UFW, unattended upgrades |
 | `configure_network.yml` | pvenodes | VLAN bridges (vmbr1–vmbr3) |
-| `configure_storage.yml` | pvenodes | LXC bind mounts (prerequisite for deploy_opentrashmail.yml) |
+| `configure_storage.yml` | pvenodes | LXC bind mounts (prerequisite for deploy_opentrashmail.yml and deploy_calibre_web_automated.yml) |
 | `harden_lxc.yml` | lxc_all | SSH, fail2ban, unattended upgrades |
 | `harden_docker.yml` | lxc_services | Docker daemon hardening |
 | `deploy_opentrashmail.yml` | opentrashmail | Full OpenTrashMail service deploy (requires configure_storage.yml first) |
+| `deploy_calibre_web_automated.yml` | calibre | Full Calibre-Web-Automated deploy (requires configure_storage.yml first) |
+| `deploy_actual_budget.yml` | actual | Hardening + UFW for the Actual Budget LXC (app installed by community script) |
 | `deploy_caddy.yml` | caddy, pihole | Caddy reverse proxy + Pihole `.lan` DNS records |
 | `deploy_monitoring.yml` | prometheus, pvenodes | Prometheus scrape config + Proxmox API user |
 | `update.yml` | pvenodes, lxc_exilemail | App-level updates — community-script LXCs via update-apps.sh + Docker image pull for opentrashmail. Add `-e dry_run=yes` to check without applying. |

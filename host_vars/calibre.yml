@@ -1,0 +1,16 @@
+---
+calibre_data_dir: /opt/calibre-web-automated
+calibre_data_mount: /mnt/calibre
+calibre_http_port: 8083
+calibre_tz: Australia/Sydney
+
+caddy_proxy:
+  hostname: calibre.lan
+  scheme: http
+  port: 8083
+
+ufw_rules:
+  - rule: allow
+    port: "{{ calibre_http_port }}"
+    proto: tcp
+    src: "{{ ufw_lan_subnet }}"

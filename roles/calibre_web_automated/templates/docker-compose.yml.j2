@@ -1,0 +1,20 @@
+# Managed by Ansible — do not edit manually.
+services:
+  calibre-web-automated:
+    image: "{{ calibre_image }}:{{ calibre_image_tag }}"
+    container_name: calibre-web-automated
+    restart: unless-stopped
+    ports:
+      - "{{ calibre_http_port }}:{{ calibre_http_port }}"
+    volumes:
+      - "{{ calibre_data_mount }}/config:/config"
+      - "{{ calibre_data_mount }}/ingest:/cwa-book-ingest"
+      - "{{ calibre_data_mount }}/library:/calibre-library"
+      - "{{ calibre_data_mount }}/plugins:/config/.config/calibre/plugins"
+    environment:
+      - "PUID={{ calibre_puid }}"
+      - "PGID={{ calibre_pgid }}"
+      - "TZ={{ calibre_tz }}"
+      - "HARDCOVER_TOKEN={{ calibre_hardcover_token }}"
+      - "NETWORK_SHARE_MODE={{ calibre_network_share_mode }}"
+      - "CWA_PORT_OVERRIDE={{ calibre_http_port }}"

@@ -1,0 +1,14 @@
+---
+actual_https_port: 5006
+
+caddy_proxy:
+  hostname: actual.lan
+  scheme: https
+  port: "{{ actual_https_port }}"
+  tls_insecure: true
+
+ufw_rules:
+  - rule: allow
+    port: "{{ actual_https_port }}"
+    proto: tcp
+    src: "{{ ufw_lan_subnet }}"

@@ -1,0 +1,5 @@
+---
+- name: restart calibre-web-automated
+  community.docker.docker_compose_v2:
+    project_src: "{{ calibre_data_dir }}"
+    state: restarted
