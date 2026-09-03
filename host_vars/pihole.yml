@@ -3,3 +3,9 @@ caddy_proxy:
   hostname: pihole.lan
   scheme: http
   port: 80
+
+homer_item:
+  name: Pi-hole
+  subtitle: DNS + ad blocking
+  icon: fas fa-shield-halved
+  group: Admin

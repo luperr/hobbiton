@@ -1,9 +1,4 @@
 ---
-# Actual Budget is installed by the community-script LXC template (native Node +
-# systemd service), so there is no application role here — this playbook only
-# applies the standard host hardening and opens the app port to the LAN.
-# App-level updates are handled by update.yml via /usr/bin/update.
-
 - name: Harden Actual Budget LXC
   hosts: actual
   become: true

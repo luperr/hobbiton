@@ -3,3 +3,9 @@ caddy_proxy:
   hostname: prometheus.lan
   scheme: http
   port: 9090
+
+homer_item:
+  name: Prometheus
+  subtitle: Metrics
+  icon: fas fa-fire
+  group: Admin

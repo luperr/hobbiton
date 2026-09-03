@@ -3,3 +3,9 @@ caddy_proxy:
   hostname: grafana.lan
   scheme: http
   port: 3000
+
+homer_item:
+  name: Grafana
+  subtitle: Dashboards
+  icon: fas fa-chart-line
+  group: Admin

@@ -1,10 +1,19 @@
 # Managed by Ansible — do not edit manually
 
+{# Homer ping tiles HEAD each vhost cross-origin, so every proxied service must
+   allow the dashboard's origin or the browser discards the response and the
+   tile reads as down. HEAD with no custom headers is a simple request, so a
+   response ACAO is enough — no preflight handling, and deliberately no
+   Allow-Credentials. #}
+{% set homer_origin = 'https://' ~ hostvars['homer'].caddy_proxy.hostname if 'homer' in groups['lxc_all'] else none %}
 {% for host in groups['lxc_all'] | sort %}
 {% if hostvars[host].caddy_proxy is defined %}
 {% set proxy = hostvars[host].caddy_proxy %}
 {{ proxy.hostname }} {
 	tls internal
+{% if homer_origin and host != 'homer' %}
+	header Access-Control-Allow-Origin "{{ homer_origin }}"
+{% endif %}
 {% if proxy.tls_insecure | default(false) %}
 	reverse_proxy {{ proxy.scheme }}://{{ hostvars[host].ansible_host }}:{{ proxy.port }} {
 		transport http {

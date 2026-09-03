@@ -1,0 +1,22 @@
+---
+# Homer is installed by the community-script LXC template (static SPA served by
+# python -m http.server on 8010), so this playbook hardens the host and
+# templates the dashboard config from inventory — every host with a homer_item
+# becomes a card. App-level updates are handled by update.yml via /usr/bin/update.
+#
+# Cards link to Caddy vhosts, so run deploy_caddy.yml after adding a service.
+
+- name: Harden Homer LXC
+  hosts: homer
+  become: true
+  roles:
+    - ssh_hardening
+    - fail2ban
+    - unattended_upgrades
+    - ufw
+
+- name: Deploy Homer dashboard
+  hosts: homer
+  become: true
+  roles:
+    - homer

@@ -3,3 +3,9 @@ caddy_proxy:
   hostname: homeassistant.lan
   scheme: http
   port: 8123
+
+homer_item:
+  name: Home Assistant
+  subtitle: Home automation
+  icon: fas fa-house-signal
+  group: Household

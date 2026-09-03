@@ -1,0 +1,60 @@
+# Managed by Ansible — do not edit manually
+title: "{{ homer_title }}"
+{% if homer_subtitle %}
+subtitle: "{{ homer_subtitle }}"
+{% endif %}
+header: true
+footer: false
+columns: "auto"
+connectivityCheck: true
+
+defaults:
+  layout: columns
+  colorTheme: {{ homer_color_theme }}
+
+colors:
+  light:
+{% for key, value in homer_colors_light.items() %}
+    {{ key }}: "{{ value }}"
+{% endfor %}
+  dark:
+{% for key, value in homer_colors_dark.items() %}
+    {{ key }}: "{{ value }}"
+{% endfor %}
+
+{# Cards are derived from any host declaring homer_item. The URL defaults to the
+   host's Caddy vhost, so a service is wired into DNS, the proxy and the
+   dashboard from a single host_vars entry. #}
+{% set discovered = [] %}
+{% for host in groups['all'] | sort %}
+{% if hostvars[host].homer_item is defined %}
+{% set group = hostvars[host].homer_item.group | default('Services') %}
+{% if group not in discovered %}
+{% set _ = discovered.append(group) %}
+{% endif %}
+{% endif %}
+{% endfor %}
+{% set ordered = (homer_group_order | select('in', discovered) | list) + (discovered | reject('in', homer_group_order) | list | sort) %}
+services:
+{% for group in ordered %}
+  - name: "{{ group }}"
+    icon: "{{ homer_group_icons[group] | default('fas fa-cubes') }}"
+    items:
+{% for host in groups['all'] | sort %}
+{% if hostvars[host].homer_item is defined and (hostvars[host].homer_item.group | default('Services')) == group %}
+{% set item = hostvars[host].homer_item %}
+{# inline if, not default() — default() would eagerly resolve caddy_proxy on hosts that set an explicit url #}
+{% set url = item.url if item.url is defined else 'https://' ~ hostvars[host].caddy_proxy.hostname %}
+      - name: "{{ item.name | default(host) }}"
+        subtitle: "{{ item.subtitle | default('') }}"
+        icon: "{{ item.icon | default('fas fa-cube') }}"
+        url: "{{ url }}"
+        target: "_blank"
+{% if item.ping | default(homer_ping) %}
+        type: Ping
+        timeout: {{ homer_ping_timeout }}
+        successCodes: {{ item.success_codes | default(homer_ping_success_codes) | to_json }}
+{% endif %}
+{% endif %}
+{% endfor %}
+{% endfor %}

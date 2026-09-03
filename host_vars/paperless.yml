@@ -3,3 +3,9 @@ caddy_proxy:
   hostname: paperless.lan
   scheme: http
   port: 8000
+
+homer_item:
+  name: Paperless
+  subtitle: Document archive
+  icon: fas fa-file-lines
+  group: Household

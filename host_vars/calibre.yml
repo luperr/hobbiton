@@ -14,3 +14,9 @@ ufw_rules:
     port: "{{ calibre_http_port }}"
     proto: tcp
     src: "{{ ufw_lan_subnet }}"
+
+homer_item:
+  name: Calibre
+  subtitle: Ebook library
+  icon: fas fa-book
+  group: Household

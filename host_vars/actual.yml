@@ -12,3 +12,9 @@ ufw_rules:
     port: "{{ actual_https_port }}"
     proto: tcp
     src: "{{ ufw_lan_subnet }}"
+
+homer_item:
+  name: Actual
+  subtitle: Budgeting
+  icon: fas fa-wallet
+  group: Household
