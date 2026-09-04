@@ -13,10 +13,6 @@ defaults:
   colorTheme: {{ homer_color_theme }}
 
 colors:
-  light:
-{% for key, value in homer_colors_light.items() %}
-    {{ key }}: "{{ value }}"
-{% endfor %}
   dark:
 {% for key, value in homer_colors_dark.items() %}
     {{ key }}: "{{ value }}"

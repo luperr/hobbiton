@@ -9,8 +9,6 @@
     that: paperless_conf.stat.exists
     fail_msg: "{{ paperless_conf_path }} not found — Paperless is installed by the community script, not this role"
 
-# The file ships the key commented out with example values, so the regexp
-# matches both the commented and configured forms to stay idempotent.
 - name: Set CSRF trusted origins
   ansible.builtin.lineinfile:
     path: "{{ paperless_conf_path }}"

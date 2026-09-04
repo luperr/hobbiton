@@ -1,6 +1,4 @@
 ---
-# Homer is a static SPA — it fetches assets/config.yml from the browser on each
-# page load, so a config change needs no service restart and there is no handler.
 - name: Template Homer dashboard config
   ansible.builtin.template:
     src: config.yml.j2

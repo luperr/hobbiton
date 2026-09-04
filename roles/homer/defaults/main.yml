@@ -6,20 +6,10 @@ homer_http_port: 8010
 homer_title: hobbiton
 homer_subtitle: ""
 
-# Ping tiles: Homer HEAD-requests each item and shows a status dot.
-# Override per service with homer_item.ping: false.
 homer_ping: true
 homer_ping_timeout: 2000
-
-# Homer counts only 2xx as up by default, but a HEAD of a bare service root
-# rarely returns 200: login redirects (302), auth challenges (401/403), HEAD
-# refusals (405) and Home Assistant's host check (400) all mean "answered, and
-# therefore up". 5xx is deliberately absent — a bad gateway is a real outage.
-# Override per service with homer_item.success_codes.
 homer_ping_success_codes: [200, 204, 301, 302, 304, 307, 308, 400, 401, 403, 405]
 
-# Dashboard group order. Groups found in homer_item that are not listed here
-# are appended alphabetically, so a new group never goes missing.
 homer_group_order:
   - Household
   - Admin
@@ -28,9 +18,7 @@ homer_group_icons:
   Household: fas fa-house
   Admin: fas fa-screwdriver-wrench
 
-# Gruvbox (github.com/morhetz/gruvbox). colorTheme auto follows the browser,
-# so both palettes are defined.
-homer_color_theme: auto
+homer_color_theme: dark
 
 homer_colors_dark:
   highlight-primary: "#1d2021"
@@ -45,17 +33,3 @@ homer_colors_dark:
   card-shadow: "rgba(0, 0, 0, 0.4)"
   link: "#83a598"
   link-hover: "#fabd2f"
-
-homer_colors_light:
-  highlight-primary: "#d5c4a1"
-  highlight-secondary: "#ebdbb2"
-  highlight-hover: "#bdae93"
-  background: "#fbf1c7"
-  card-background: "#f2e5bc"
-  text: "#3c3836"
-  text-header: "#282828"
-  text-title: "#b57614"
-  text-subtitle: "#7c6f64"
-  card-shadow: "rgba(60, 56, 54, 0.15)"
-  link: "#076678"
-  link-hover: "#af3a03"
