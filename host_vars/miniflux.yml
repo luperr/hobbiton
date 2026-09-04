@@ -12,3 +12,9 @@ ufw_rules:
     port: "{{ miniflux_http_port }}"
     proto: tcp
     src: "{{ ufw_lan_subnet }}"
+
+homer_item:
+  name: Miniflux
+  subtitle: RSS reader
+  icon: fas fa-rss
+  group: Household

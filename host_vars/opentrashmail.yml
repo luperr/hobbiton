@@ -21,3 +21,9 @@ ufw_rules:
     port: "{{ opentrashmail_http_port }}"
     proto: tcp
     src: "{{ ufw_lan_subnet }}"
+
+homer_item:
+  name: OpenTrashMail
+  subtitle: Disposable email
+  icon: fas fa-envelope-open-text
+  group: Admin

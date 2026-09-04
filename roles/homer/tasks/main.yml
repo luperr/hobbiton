@@ -1,0 +1,14 @@
+---
+- name: Template Homer dashboard config
+  ansible.builtin.template:
+    src: config.yml.j2
+    dest: "{{ homer_config_path }}"
+    owner: root
+    group: root
+    mode: "0644"
+
+- name: Enable and start homer
+  ansible.builtin.systemd:
+    name: homer
+    enabled: true
+    state: started

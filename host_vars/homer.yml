@@ -1,0 +1,13 @@
+---
+homer_http_port: 8010
+
+caddy_proxy:
+  hostname: home.lan
+  scheme: http
+  port: "{{ homer_http_port }}"
+
+ufw_rules:
+  - rule: allow
+    port: "{{ homer_http_port }}"
+    proto: tcp
+    src: "{{ ufw_lan_subnet }}"

@@ -2,4 +2,14 @@
 caddy_proxy:
   hostname: pihole.lan
   scheme: http
-  port: 80
+  port: 8080
+
+homer_item:
+  name: Pi-hole
+  subtitle: DNS + ad blocking
+  icon: fas fa-shield-halved
+  group: Admin
+  # / returns 403 by design; the UI lives under /admin
+  url: https://pihole.lan/admin
+  # /admin redirects twice; ping the terminal page so the check is one hop
+  endpoint: https://pihole.lan/admin/login

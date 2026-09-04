@@ -1,0 +1,6 @@
+---
+- name: Configure Paperless
+  hosts: paperless
+  become: true
+  roles:
+    - paperless

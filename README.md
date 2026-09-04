@@ -15,7 +15,8 @@ Physical Host — Proxmox (192.168.1.85)
 │   ├── miniflux       192.168.1.177  LXC 113
 │   ├── caddy          192.168.1.178  LXC 114
 │   ├── calibre        192.168.1.179  LXC 115
-│   └── actual         192.168.1.180  LXC 116
+│   ├── actual         192.168.1.180  LXC 116
+│   └── homer          192.168.1.181  LXC 117
 ├── vmbr1  — Services VLAN 20 (10.10.20.0/24)
 │   └── docker         10.10.20.10    LXC 107
 ├── vmbr2  — Monitoring VLAN 30 (10.10.30.0/24)
@@ -56,6 +57,7 @@ ansible-galaxy collection install -r requirements.yml
 | caddy | lxc_containers | 192.168.1.178 | 114 |
 | calibre | lxc_containers | 192.168.1.179 | 115 |
 | actual | lxc_containers | 192.168.1.180 | 116 |
+| homer | lxc_containers | 192.168.1.181 | 117 |
 | docker | lxc_services | 10.10.20.10 | 107 |
 | prometheus | lxc_monitoring | 10.10.30.10 | 103 |
 | grafana | lxc_monitoring | 10.10.30.11 | 108 |
@@ -77,6 +79,8 @@ ansible-galaxy collection install -r requirements.yml
 | `deploy_opentrashmail.yml` | opentrashmail | Full OpenTrashMail service deploy (requires configure_storage.yml first) |
 | `deploy_calibre_web_automated.yml` | calibre | Full Calibre-Web-Automated deploy (requires configure_storage.yml first) |
 | `deploy_actual_budget.yml` | actual | Hardening + UFW for the Actual Budget LXC (app installed by community script) |
+| `deploy_homer.yml` | homer | Hardening + UFW + templated Homer dashboard config (app installed by community script) |
+| `deploy_paperless.yml` | paperless | Paperless CSRF trusted origins (app installed by community script) |
 | `deploy_caddy.yml` | caddy, pihole | Caddy reverse proxy + Pihole `.lan` DNS records |
 | `deploy_monitoring.yml` | prometheus, pvenodes | Prometheus scrape config + Proxmox API user |
 | `update.yml` | pvenodes, lxc_exilemail | App-level updates — community-script LXCs via update-apps.sh + Docker image pull for opentrashmail. Add `-e dry_run=yes` to check without applying. |
@@ -112,10 +116,41 @@ Manual steps required before running `configure_network.yml`:
 - [Unifi WiFi VLAN setup](docs/unifi_vlan_setup.md)
 - [Monitoring stack setup](docs/monitoring_setup.md)
 
+## Dashboard
+
+Homer at [https://home.lan](https://home.lan) is the landing page. Cards are
+generated from inventory — a host appears on the dashboard when its `host_vars`
+declares a `homer_item`, with the URL defaulting to that host's Caddy vhost:
+
+```yaml
+# host_vars/<service>.yml
+caddy_proxy:
+  hostname: <service>.lan
+  scheme: http
+  port: 8080
+
+homer_item:
+  name: Service
+  subtitle: What it does
+  icon: fas fa-cube    # any Font Awesome free class
+  group: Household     # or Admin; see homer_group_order in roles/homer/defaults
+  # url: https://host:port   # override for anything not behind Caddy
+  # ping: false              # disable the status-dot check for this card
+```
+
+Then `ansible-playbook deploy_homer.yml` (dashboard) and
+`ansible-playbook deploy_caddy.yml` (vhost, DNS record, CORS allowance).
+
+Status dots come from Homer's Ping check, which HEAD-requests each vhost from
+the browser. That is cross-origin, so `Caddyfile.j2` grants every proxied vhost
+an `Access-Control-Allow-Origin` for the Homer origin. The browser must also
+trust Caddy's internal CA, or the checks fail on TLS regardless.
+
 ## Known gaps
 
 - **miniflux** — in inventory and proxied via Caddy, but no deploy playbook or role yet
-- **caddy TLS** — currently serving HTTP only on `.lan`; upgrade to `tls internal` for self-signed LAN certs if needed
+- **unifi.lan is down** — `unifi.service` and `mongod` have both been inactive since 2026-05-23 (clean SIGTERM, not a crash); nothing listens on 8443, so Caddy returns 502. The `caddy_proxy` entry is already correct and needs no change — the application itself has to be brought back up, starting with why MongoDB stopped
+- **homeassistant.lan returns 400** — HA has no `http:` block, so it trusts no proxy and rejects Caddy's `X-Forwarded-For` with a bare `400: Bad Request` (the backend answers 200 directly). Fix is `use_x_forwarded_for: true` + `trusted_proxies: [192.168.1.178]` in `/var/lib/docker/volumes/hass_config/_data/configuration.yaml`, ideally via a role like `roles/paperless`
 - **Monitoring stack** — Prometheus, Grafana, Loki, and cAdvisor are provisioned manually; see [docs/monitoring_setup.md](docs/monitoring_setup.md)
 - **UFW on lxc_containers** — SSH-hardened but no firewall applied to pihole, unifi, homeassistant, paperless, cloudflared, miniflux
 - **No CI/CD** — playbooks are run locally; no linting or check-mode pipeline

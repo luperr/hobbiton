@@ -3,3 +3,9 @@ caddy_proxy:
   hostname: umami.lan
   scheme: http
   port: 3000
+
+homer_item:
+  name: Umami
+  subtitle: Web analytics
+  icon: fas fa-chart-simple
+  group: Admin

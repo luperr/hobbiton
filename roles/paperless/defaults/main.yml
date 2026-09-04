@@ -1,0 +1,7 @@
+---
+paperless_conf_path: /opt/paperless/paperless.conf
+
+paperless_csrf_trusted_origins:
+  - "https://{{ caddy_proxy.hostname }}"
+
+paperless_service: paperless-webserver

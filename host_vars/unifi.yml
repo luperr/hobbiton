@@ -4,3 +4,9 @@ caddy_proxy:
   scheme: https
   port: 8443
   tls_insecure: true
+
+homer_item:
+  name: Unifi
+  subtitle: Network controller
+  icon: fas fa-wifi
+  group: Admin

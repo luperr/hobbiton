@@ -1,0 +1,15 @@
+---
+- name: Harden Homer LXC
+  hosts: homer
+  become: true
+  roles:
+    - ssh_hardening
+    - fail2ban
+    - unattended_upgrades
+    - ufw
+
+- name: Deploy Homer dashboard
+  hosts: homer
+  become: true
+  roles:
+    - homer

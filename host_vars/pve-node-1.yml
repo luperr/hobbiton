@@ -10,3 +10,11 @@
 proxmox_mgmt_address: "192.168.1.85"
 proxmox_mgmt_prefix: "24"
 proxmox_mgmt_gateway: "192.168.1.1"
+
+homer_item:
+  name: Proxmox
+  subtitle: Hypervisor
+  icon: fas fa-server
+  group: Admin
+  url: https://192.168.1.85:8006
+  ping: false
