@@ -1,0 +1,12 @@
+---
+paperless_conf_path: /opt/paperless/paperless.conf
+
+# Django checks the Origin header on unsafe methods, so reaching Paperless on a
+# hostname absent from this list gives "CSRF verification failed" on the login
+# POST while the login page itself still loads fine.
+# ALLOWED_HOSTS is deliberately not managed here: it already admits the .lan
+# name, and pinning it would add a second list to keep in sync.
+paperless_csrf_trusted_origins:
+  - "https://{{ caddy_proxy.hostname }}"
+
+paperless_service: paperless-webserver

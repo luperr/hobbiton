@@ -4,7 +4,11 @@
    allow the dashboard's origin or the browser discards the response and the
    tile reads as down. HEAD with no custom headers is a simple request, so a
    response ACAO is enough — no preflight handling, and deliberately no
-   Allow-Credentials. #}
+   Allow-Credentials.
+   The > prefix defers the op until after the proxy has written its response
+   headers, so it replaces an upstream ACAO instead of appending a second one:
+   Actual and Pi-hole both send their own `*`, and a browser rejects any
+   response carrying two different ACAO values. #}
 {% set homer_origin = 'https://' ~ hostvars['homer'].caddy_proxy.hostname if 'homer' in groups['lxc_all'] else none %}
 {% for host in groups['lxc_all'] | sort %}
 {% if hostvars[host].caddy_proxy is defined %}
@@ -12,7 +16,14 @@
 {{ proxy.hostname }} {
 	tls internal
 {% if homer_origin and host != 'homer' %}
-	header Access-Control-Allow-Origin "{{ homer_origin }}"
+	header >Access-Control-Allow-Origin "{{ homer_origin }}"
+{% endif %}
+{% if host == 'homer' %}
+	{# python -m http.server sends only Last-Modified, so browsers apply
+	   heuristic freshness and can serve a stale dashboard config for hours
+	   after a deploy. The page is tiny; revalidate every load. #}
+	@dashboard_config path /assets/config.yml
+	header @dashboard_config Cache-Control "no-cache"
 {% endif %}
 {% if proxy.tls_insecure | default(false) %}
 	reverse_proxy {{ proxy.scheme }}://{{ hostvars[host].ansible_host }}:{{ proxy.port }} {

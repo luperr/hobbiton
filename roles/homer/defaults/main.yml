@@ -16,7 +16,7 @@ homer_ping_timeout: 2000
 # refusals (405) and Home Assistant's host check (400) all mean "answered, and
 # therefore up". 5xx is deliberately absent — a bad gateway is a real outage.
 # Override per service with homer_item.success_codes.
-homer_ping_success_codes: [200, 204, 301, 302, 304, 400, 401, 403, 405]
+homer_ping_success_codes: [200, 204, 301, 302, 304, 307, 308, 400, 401, 403, 405]
 
 # Dashboard group order. Groups found in homer_item that are not listed here
 # are appended alphabetically, so a new group never goes missing.

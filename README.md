@@ -80,6 +80,7 @@ ansible-galaxy collection install -r requirements.yml
 | `deploy_calibre_web_automated.yml` | calibre | Full Calibre-Web-Automated deploy (requires configure_storage.yml first) |
 | `deploy_actual_budget.yml` | actual | Hardening + UFW for the Actual Budget LXC (app installed by community script) |
 | `deploy_homer.yml` | homer | Hardening + UFW + templated Homer dashboard config (app installed by community script) |
+| `deploy_paperless.yml` | paperless | Paperless CSRF trusted origins (app installed by community script) |
 | `deploy_caddy.yml` | caddy, pihole | Caddy reverse proxy + Pihole `.lan` DNS records |
 | `deploy_monitoring.yml` | prometheus, pvenodes | Prometheus scrape config + Proxmox API user |
 | `update.yml` | pvenodes, lxc_exilemail | App-level updates — community-script LXCs via update-apps.sh + Docker image pull for opentrashmail. Add `-e dry_run=yes` to check without applying. |
@@ -148,7 +149,8 @@ trust Caddy's internal CA, or the checks fail on TLS regardless.
 ## Known gaps
 
 - **miniflux** — in inventory and proxied via Caddy, but no deploy playbook or role yet
-- **pihole.lan / unifi.lan return 502** — both vhosts are in the Caddyfile but Caddy cannot reach the backend; Pi-hole serves its UI under `/admin` and UniFi needs an HTTPS upstream with `tls_insecure`. Their Homer tiles will read as down until the `caddy_proxy` entries are fixed
+- **unifi.lan is down** — `unifi.service` and `mongod` have both been inactive since 2026-05-23 (clean SIGTERM, not a crash); nothing listens on 8443, so Caddy returns 502. The `caddy_proxy` entry is already correct and needs no change — the application itself has to be brought back up, starting with why MongoDB stopped
+- **homeassistant.lan returns 400** — HA has no `http:` block, so it trusts no proxy and rejects Caddy's `X-Forwarded-For` with a bare `400: Bad Request` (the backend answers 200 directly). Fix is `use_x_forwarded_for: true` + `trusted_proxies: [192.168.1.178]` in `/var/lib/docker/volumes/hass_config/_data/configuration.yaml`, ideally via a role like `roles/paperless`
 - **Monitoring stack** — Prometheus, Grafana, Loki, and cAdvisor are provisioned manually; see [docs/monitoring_setup.md](docs/monitoring_setup.md)
 - **UFW on lxc_containers** — SSH-hardened but no firewall applied to pihole, unifi, homeassistant, paperless, cloudflared, miniflux
 - **No CI/CD** — playbooks are run locally; no linting or check-mode pipeline

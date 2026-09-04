@@ -53,6 +53,9 @@ services:
 {% if item.ping | default(homer_ping) %}
         type: Ping
         timeout: {{ homer_ping_timeout }}
+{% if item.endpoint is defined %}
+        endpoint: "{{ item.endpoint }}"
+{% endif %}
         successCodes: {{ item.success_codes | default(homer_ping_success_codes) | to_json }}
 {% endif %}
 {% endif %}

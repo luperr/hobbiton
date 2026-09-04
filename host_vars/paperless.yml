@@ -9,3 +9,7 @@ homer_item:
   subtitle: Document archive
   icon: fas fa-file-lines
   group: Household
+
+paperless_csrf_trusted_origins:
+  - https://paperless.lachlannwhitehill.com
+  - "https://{{ caddy_proxy.hostname }}"
